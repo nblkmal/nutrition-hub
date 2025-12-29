@@ -1,0 +1,112 @@
+# generated: 2025-12-29
+# project: bmadproject
+# project_key: bmadproject
+# tracking_system: file-system
+# story_location: docs/sprint-artifacts
+#
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic exists in epic file but not contexted
+#   - contexted: Epic tech context created (required before drafting stories)
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - drafted: Story file created in stories folder
+#   - ready-for-dev: Draft approved and story context created
+#   - in-progress: Developer actively working on implementation
+#   - review: Under SM review (via code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - completed: Retrospective has been done
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epics should be 'contexted' before stories can be 'drafted'
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically drafts next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
+
+generated: 2025-12-29
+project: bmadproject
+project_key: bmadproject
+tracking_system: file-system
+story_location: docs/sprint-artifacts
+
+development_status:
+  # Epic 1: Foundation & Core Infrastructure
+  epic-1: in-progress
+  1-1-project-initialization-with-nuxt-v4: ready-for-dev
+  1-2-sqlite-database-schema-implementation: backlog
+  1-3-database-seed-data-with-common-foods: backlog
+  1-4-server-routes-infrastructure-setup: backlog
+  1-5-typescript-type-definitions: backlog
+  1-6-vercel-deployment-configuration: backlog
+  1-7-error-handling-and-logging-infrastructure: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Search & Food Discovery
+  epic-2: backlog
+  2-1-food-search-api-with-sqlite-query: backlog
+  2-2-food-detail-api-endpoint: backlog
+  2-3-calorieninjas-api-integration-with-caching: backlog
+  2-4-search-autocomplete-composable: backlog
+  2-5-food-detail-page-ssr-with-seo: backlog
+  2-6-searchbar-component-with-autocomplete: backlog
+  2-7-homepage-with-search-interface: backlog
+  2-8-nutritionlabel-component: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Intelligent Autocategorization Engine
+  epic-3: backlog
+  3-1-category-rule-engine-implementation: backlog
+  3-2-batch-categorization-system: backlog
+  3-3-category-crud-operations: backlog
+  3-4-food-category-relationships-api: backlog
+  3-5-category-browse-page: backlog
+  3-6-categorybadges-component-for-food-pages: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Advanced Analytics & Discovery
+  epic-4: backlog
+  4-1-versatile-foods-leaderboard-algorithm: backlog
+  4-2-category-overlap-analysis-jaccard-similarity: backlog
+  4-3-bridge-foods-discovery-algorithm: backlog
+  4-4-analytics-dashboard-page: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Social Sharing & Virality
+  epic-5: backlog
+  5-1-nutritioncard-visual-component: backlog
+  5-2-share-image-generation-and-caching: backlog
+  5-3-social-share-buttons-component: backlog
+  5-4-open-graph-and-twitter-card-meta-tags: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Admin Dashboard & System Monitoring
+  epic-6: backlog
+  6-1-admin-analytics-api-endpoints: backlog
+  6-2-admin-dashboard-page: backlog
+  6-3-analytics-data-export: backlog
+  epic-6-retrospective: optional
+
+  # Epic 7: Content Management & SEO Optimization
+  epic-7: backlog
+  7-1-food-crud-operations: backlog
+  7-2-xml-sitemap-generation: backlog
+  7-3-robots-txt-configuration: backlog
+  7-4-schema-org-structured-data-validation: backlog
+  epic-7-retrospective: optional
+
+  # Epic 8: Polish & Accessibility Excellence
+  epic-8: backlog
+  8-1-global-loading-states-and-skeleton-screens: backlog
+  8-2-error-boundaries-and-user-friendly-error-messages: backlog
+  8-3-dark-mode-implementation-and-theme-persistence: backlog
+  8-4-keyboard-navigation-and-focus-management: backlog
+  8-5-screen-reader-optimization-and-aria-attributes: backlog
+  8-6-color-contrast-and-visual-accessibility: backlog
+  8-7-responsive-design-and-touch-target-optimization: backlog
+  epic-8-retrospective: optional
