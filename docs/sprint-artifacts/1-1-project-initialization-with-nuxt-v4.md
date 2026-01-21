@@ -1,6 +1,6 @@
 # Story 1.1: Project Initialization with Nuxt v4
 
-Status: Ready for Review
+Status: done
 
 ## Story
 
