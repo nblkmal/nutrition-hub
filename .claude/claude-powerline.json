@@ -1,0 +1,48 @@
+{
+    "theme": "dark",
+    "display": {
+        "style": "powerline",
+        "colorCompatibility": "auto",
+        "lines": [
+            {
+                "segments": {
+                    "directory": {
+                        "enabled": true,
+                        "showBasename": true
+                    },
+                    "model": {
+                        "enabled": true
+                    },
+                    "git": {
+                        "enabled": true,
+                        "showSha": false,
+                        "showWorkingTree": false,
+                        "showOperation": false,
+                        "showTag": false,
+                        "showTimeSinceCommit": true,
+                        "showStashCount": false,
+                        "showUpstream": false,
+                        "showRepoName": false
+                    },
+                    "context": {
+                        "enabled": true,
+                        "showPercentageOnly": false
+                    },
+                    "session": {
+                        "enabled": true,
+                        "type": "tokens",
+                        "costSource": "calculated"
+                    },
+                    "block": {
+                        "enabled": true,
+                        "type": "tokens",
+                        "burnType": "tokens"
+                    },
+                    "version": {
+                        "enabled": true
+                    }
+                }
+            }
+        ]
+    }
+}
