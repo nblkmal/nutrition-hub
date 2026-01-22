@@ -9,7 +9,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "seed": "npx tsx server/database/seed.ts",
+    "seed:reset": "npx tsx server/database/seed.ts --reset"
   },
   "devDependencies": {
     "@nuxt/test-utils": "^3.18.1",
