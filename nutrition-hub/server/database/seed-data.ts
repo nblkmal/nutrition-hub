@@ -1,4 +1,4 @@
-import type { FoodDbRow } from '../../types/database'
+import type { FoodInsertData } from '../../types/database'
 
 /**
  * Seed data for common foods.
@@ -6,12 +6,14 @@ import type { FoodDbRow } from '../../types/database'
  * Source: USDA FoodData Central
  *
  * Calorie validation: calories ≈ (protein_g × 4) + (carbs_g × 4) + (fat_g × 9) ± 10%
+ *
+ * Note: slugs are generated dynamically in seed.ts using slugify() utility.
+ * Only 'name' is required - slugs are auto-generated to ensure consistency.
  */
-export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = [
+export const seedFoods: FoodInsertData[] = [
   // PROTEINS (20 items)
   {
     name: 'Chicken Breast',
-    slug: 'chicken-breast',
     serving_size_g: 100,
     calories: 165,
     protein_g: 31,
@@ -26,7 +28,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Chicken Thigh',
-    slug: 'chicken-thigh',
     serving_size_g: 100,
     calories: 209,
     protein_g: 26,
@@ -41,7 +42,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Turkey Breast',
-    slug: 'turkey-breast',
     serving_size_g: 100,
     calories: 135,
     protein_g: 30,
@@ -56,7 +56,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Ground Turkey',
-    slug: 'ground-turkey',
     serving_size_g: 100,
     calories: 149,
     protein_g: 28,
@@ -71,7 +70,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Salmon Atlantic',
-    slug: 'salmon-atlantic',
     serving_size_g: 100,
     calories: 208,
     protein_g: 20,
@@ -86,7 +84,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Tuna Canned in Water',
-    slug: 'tuna-canned-in-water',
     serving_size_g: 100,
     calories: 116,
     protein_g: 26,
@@ -101,7 +98,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Lean Beef Sirloin',
-    slug: 'lean-beef-sirloin',
     serving_size_g: 100,
     calories: 154,
     protein_g: 26,
@@ -116,7 +112,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Ground Beef 93% Lean',
-    slug: 'ground-beef-93-lean',
     serving_size_g: 100,
     calories: 164,
     protein_g: 23,
@@ -131,7 +126,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Egg Large',
-    slug: 'egg-large',
     serving_size_g: 100,
     calories: 155,
     protein_g: 13,
@@ -146,7 +140,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Egg Whites',
-    slug: 'egg-whites',
     serving_size_g: 100,
     calories: 52,
     protein_g: 11,
@@ -161,7 +154,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Cod Fish',
-    slug: 'cod-fish',
     serving_size_g: 100,
     calories: 82,
     protein_g: 18,
@@ -176,7 +168,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Shrimp',
-    slug: 'shrimp',
     serving_size_g: 100,
     calories: 99,
     protein_g: 24,
@@ -191,7 +182,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Tilapia',
-    slug: 'tilapia',
     serving_size_g: 100,
     calories: 96,
     protein_g: 20,
@@ -206,7 +196,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Pork Tenderloin',
-    slug: 'pork-tenderloin',
     serving_size_g: 100,
     calories: 143,
     protein_g: 22,
@@ -221,7 +210,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Ham Lean',
-    slug: 'ham-lean',
     serving_size_g: 100,
     calories: 122,
     protein_g: 21,
@@ -236,7 +224,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Bacon Turkey',
-    slug: 'bacon-turkey',
     serving_size_g: 100,
     calories: 226,
     protein_g: 26,
@@ -251,7 +238,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Lamb Leg',
-    slug: 'lamb-leg',
     serving_size_g: 100,
     calories: 175,
     protein_g: 24,
@@ -266,7 +252,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Bison',
-    slug: 'bison',
     serving_size_g: 100,
     calories: 143,
     protein_g: 28,
@@ -281,7 +266,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Venison',
-    slug: 'venison',
     serving_size_g: 100,
     calories: 150,
     protein_g: 30,
@@ -296,7 +280,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Sardines Canned',
-    slug: 'sardines-canned',
     serving_size_g: 100,
     calories: 208,
     protein_g: 25,
@@ -313,7 +296,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   // CARBOHYDRATES (25 items)
   {
     name: 'Brown Rice Cooked',
-    slug: 'brown-rice-cooked',
     serving_size_g: 100,
     calories: 112,
     protein_g: 2.6,
@@ -328,7 +310,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'White Rice Cooked',
-    slug: 'white-rice-cooked',
     serving_size_g: 100,
     calories: 130,
     protein_g: 2.7,
@@ -343,7 +324,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Potato Boiled',
-    slug: 'potato-boiled',
     serving_size_g: 100,
     calories: 87,
     protein_g: 1.9,
@@ -358,7 +338,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Sweet Potato Boiled',
-    slug: 'sweet-potato-boiled',
     serving_size_g: 100,
     calories: 86,
     protein_g: 1.6,
@@ -373,7 +352,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Oats Rolled Dry',
-    slug: 'oats-rolled-dry',
     serving_size_g: 100,
     calories: 389,
     protein_g: 16.9,
@@ -388,7 +366,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Oatmeal Cooked',
-    slug: 'oatmeal-cooked',
     serving_size_g: 100,
     calories: 71,
     protein_g: 2.5,
@@ -403,7 +380,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Quinoa Cooked',
-    slug: 'quinoa-cooked',
     serving_size_g: 100,
     calories: 120,
     protein_g: 4.4,
@@ -418,7 +394,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Whole Wheat Bread',
-    slug: 'whole-wheat-bread',
     serving_size_g: 100,
     calories: 247,
     protein_g: 13,
@@ -433,7 +408,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'White Bread',
-    slug: 'white-bread',
     serving_size_g: 100,
     calories: 265,
     protein_g: 9,
@@ -448,7 +422,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Pasta Whole Wheat Cooked',
-    slug: 'pasta-whole-wheat-cooked',
     serving_size_g: 100,
     calories: 124,
     protein_g: 5.3,
@@ -463,7 +436,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Pasta White Cooked',
-    slug: 'pasta-white-cooked',
     serving_size_g: 100,
     calories: 131,
     protein_g: 5,
@@ -478,7 +450,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Couscous Cooked',
-    slug: 'couscous-cooked',
     serving_size_g: 100,
     calories: 112,
     protein_g: 3.8,
@@ -493,7 +464,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Corn Sweet Cooked',
-    slug: 'corn-sweet-cooked',
     serving_size_g: 100,
     calories: 96,
     protein_g: 3.4,
@@ -508,7 +478,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Peas Green Cooked',
-    slug: 'peas-green-cooked',
     serving_size_g: 100,
     calories: 84,
     protein_g: 5.4,
@@ -523,7 +492,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Lentils Cooked',
-    slug: 'lentils-cooked',
     serving_size_g: 100,
     calories: 116,
     protein_g: 9,
@@ -538,7 +506,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Black Beans Cooked',
-    slug: 'black-beans-cooked',
     serving_size_g: 100,
     calories: 132,
     protein_g: 8.9,
@@ -553,7 +520,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Chickpeas Cooked',
-    slug: 'chickpeas-cooked',
     serving_size_g: 100,
     calories: 164,
     protein_g: 8.9,
@@ -568,7 +534,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Kidney Beans Cooked',
-    slug: 'kidney-beans-cooked',
     serving_size_g: 100,
     calories: 127,
     protein_g: 8.7,
@@ -583,7 +548,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Pinto Beans Cooked',
-    slug: 'pinto-beans-cooked',
     serving_size_g: 100,
     calories: 143,
     protein_g: 9,
@@ -598,7 +562,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Barley Cooked',
-    slug: 'barley-cooked',
     serving_size_g: 100,
     calories: 123,
     protein_g: 2.3,
@@ -613,7 +576,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Bulgur Cooked',
-    slug: 'bulgur-cooked',
     serving_size_g: 100,
     calories: 83,
     protein_g: 3.1,
@@ -628,7 +590,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Millet Cooked',
-    slug: 'millet-cooked',
     serving_size_g: 100,
     calories: 119,
     protein_g: 3.5,
@@ -643,7 +604,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Soba Noodles Cooked',
-    slug: 'soba-noodles-cooked',
     serving_size_g: 100,
     calories: 99,
     protein_g: 5,
@@ -658,7 +618,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Tortilla Flour',
-    slug: 'tortilla-flour',
     serving_size_g: 100,
     calories: 295,
     protein_g: 8,
@@ -673,7 +632,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Bagel Plain',
-    slug: 'bagel-plain',
     serving_size_g: 100,
     calories: 250,
     protein_g: 10,
@@ -690,7 +648,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   // VEGETABLES (20 items)
   {
     name: 'Broccoli Raw',
-    slug: 'broccoli-raw',
     serving_size_g: 100,
     calories: 34,
     protein_g: 2.8,
@@ -705,7 +662,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Spinach Raw',
-    slug: 'spinach-raw',
     serving_size_g: 100,
     calories: 23,
     protein_g: 2.9,
@@ -720,7 +676,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Carrot Raw',
-    slug: 'carrot-raw',
     serving_size_g: 100,
     calories: 41,
     protein_g: 0.9,
@@ -735,7 +690,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Tomato Raw',
-    slug: 'tomato-raw',
     serving_size_g: 100,
     calories: 18,
     protein_g: 0.9,
@@ -750,7 +704,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Avocado Raw',
-    slug: 'avocado-raw',
     serving_size_g: 100,
     calories: 160,
     protein_g: 2,
@@ -765,7 +718,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Cauliflower Raw',
-    slug: 'cauliflower-raw',
     serving_size_g: 100,
     calories: 25,
     protein_g: 1.9,
@@ -780,7 +732,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Asparagus Raw',
-    slug: 'asparagus-raw',
     serving_size_g: 100,
     calories: 20,
     protein_g: 2.2,
@@ -795,7 +746,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Bell Pepper Red',
-    slug: 'bell-pepper-red',
     serving_size_g: 100,
     calories: 31,
     protein_g: 1,
@@ -810,7 +760,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Bell Pepper Green',
-    slug: 'bell-pepper-green',
     serving_size_g: 100,
     calories: 20,
     protein_g: 0.9,
@@ -825,7 +774,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Cucumber Raw',
-    slug: 'cucumber-raw',
     serving_size_g: 100,
     calories: 16,
     protein_g: 0.7,
@@ -840,7 +788,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Lettuce Romaine',
-    slug: 'lettuce-romaine',
     serving_size_g: 100,
     calories: 17,
     protein_g: 1.4,
@@ -855,7 +802,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Kale Raw',
-    slug: 'kale-raw',
     serving_size_g: 100,
     calories: 35,
     protein_g: 2.9,
@@ -870,7 +816,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Zucchini Raw',
-    slug: 'zucchini-raw',
     serving_size_g: 100,
     calories: 17,
     protein_g: 1.2,
@@ -885,7 +830,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Mushrooms Raw',
-    slug: 'mushrooms-raw',
     serving_size_g: 100,
     calories: 22,
     protein_g: 3.1,
@@ -900,7 +844,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Onion Raw',
-    slug: 'onion-raw',
     serving_size_g: 100,
     calories: 40,
     protein_g: 1.1,
@@ -915,7 +858,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Garlic Raw',
-    slug: 'garlic-raw',
     serving_size_g: 100,
     calories: 149,
     protein_g: 6.4,
@@ -930,7 +872,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Brussels Sprouts Raw',
-    slug: 'brussels-sprouts-raw',
     serving_size_g: 100,
     calories: 43,
     protein_g: 3.4,
@@ -945,7 +886,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Green Beans Raw',
-    slug: 'green-beans-raw',
     serving_size_g: 100,
     calories: 31,
     protein_g: 1.8,
@@ -960,7 +900,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Celery Raw',
-    slug: 'celery-raw',
     serving_size_g: 100,
     calories: 14,
     protein_g: 0.7,
@@ -975,7 +914,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Eggplant Raw',
-    slug: 'eggplant-raw',
     serving_size_g: 100,
     calories: 25,
     protein_g: 1,
@@ -992,7 +930,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   // FRUITS (15 items)
   {
     name: 'Banana',
-    slug: 'banana',
     serving_size_g: 100,
     calories: 89,
     protein_g: 1.1,
@@ -1007,7 +944,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Apple with Skin',
-    slug: 'apple-with-skin',
     serving_size_g: 100,
     calories: 52,
     protein_g: 0.3,
@@ -1022,7 +958,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Blueberries Raw',
-    slug: 'blueberries-raw',
     serving_size_g: 100,
     calories: 57,
     protein_g: 0.7,
@@ -1037,7 +972,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Strawberries Raw',
-    slug: 'strawberries-raw',
     serving_size_g: 100,
     calories: 32,
     protein_g: 0.7,
@@ -1052,7 +986,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Orange Raw',
-    slug: 'orange-raw',
     serving_size_g: 100,
     calories: 47,
     protein_g: 0.9,
@@ -1067,7 +1000,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Grapes Raw',
-    slug: 'grapes-raw',
     serving_size_g: 100,
     calories: 69,
     protein_g: 0.7,
@@ -1082,7 +1014,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Mango Raw',
-    slug: 'mango-raw',
     serving_size_g: 100,
     calories: 60,
     protein_g: 0.8,
@@ -1097,7 +1028,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Pineapple Raw',
-    slug: 'pineapple-raw',
     serving_size_g: 100,
     calories: 50,
     protein_g: 0.5,
@@ -1112,7 +1042,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Peach Raw',
-    slug: 'peach-raw',
     serving_size_g: 100,
     calories: 39,
     protein_g: 0.9,
@@ -1127,7 +1056,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Pear Raw',
-    slug: 'pear-raw',
     serving_size_g: 100,
     calories: 57,
     protein_g: 0.4,
@@ -1142,7 +1070,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Watermelon Raw',
-    slug: 'watermelon-raw',
     serving_size_g: 100,
     calories: 30,
     protein_g: 0.6,
@@ -1157,7 +1084,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Raspberries Raw',
-    slug: 'raspberries-raw',
     serving_size_g: 100,
     calories: 52,
     protein_g: 1.2,
@@ -1172,7 +1098,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Blackberries Raw',
-    slug: 'blackberries-raw',
     serving_size_g: 100,
     calories: 43,
     protein_g: 1.4,
@@ -1187,7 +1112,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Lemon Raw',
-    slug: 'lemon-raw',
     serving_size_g: 100,
     calories: 29,
     protein_g: 1.1,
@@ -1202,7 +1126,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Lime Raw',
-    slug: 'lime-raw',
     serving_size_g: 100,
     calories: 30,
     protein_g: 0.7,
@@ -1219,7 +1142,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   // DAIRY (15 items)
   {
     name: 'Milk Whole',
-    slug: 'milk-whole',
     serving_size_g: 100,
     calories: 61,
     protein_g: 3.2,
@@ -1234,7 +1156,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Milk 2% Reduced Fat',
-    slug: 'milk-2-reduced-fat',
     serving_size_g: 100,
     calories: 50,
     protein_g: 3.3,
@@ -1249,7 +1170,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Milk Skim Nonfat',
-    slug: 'milk-skim-nonfat',
     serving_size_g: 100,
     calories: 35,
     protein_g: 3.4,
@@ -1264,7 +1184,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Greek Yogurt Nonfat',
-    slug: 'greek-yogurt-nonfat',
     serving_size_g: 100,
     calories: 59,
     protein_g: 10,
@@ -1279,7 +1198,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Greek Yogurt Whole',
-    slug: 'greek-yogurt-whole',
     serving_size_g: 100,
     calories: 97,
     protein_g: 9,
@@ -1294,7 +1212,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Cottage Cheese Low Fat',
-    slug: 'cottage-cheese-low-fat',
     serving_size_g: 100,
     calories: 72,
     protein_g: 12,
@@ -1309,7 +1226,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Cottage Cheese Full Fat',
-    slug: 'cottage-cheese-full-fat',
     serving_size_g: 100,
     calories: 98,
     protein_g: 11,
@@ -1324,7 +1240,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Cheddar Cheese',
-    slug: 'cheddar-cheese',
     serving_size_g: 100,
     calories: 403,
     protein_g: 25,
@@ -1339,7 +1254,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Mozzarella Cheese Whole',
-    slug: 'mozzarella-cheese-whole',
     serving_size_g: 100,
     calories: 318,
     protein_g: 22,
@@ -1354,7 +1268,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Swiss Cheese',
-    slug: 'swiss-cheese',
     serving_size_g: 100,
     calories: 393,
     protein_g: 27,
@@ -1369,7 +1282,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Parmesan Cheese',
-    slug: 'parmesan-cheese',
     serving_size_g: 100,
     calories: 431,
     protein_g: 38,
@@ -1384,7 +1296,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Feta Cheese',
-    slug: 'feta-cheese',
     serving_size_g: 100,
     calories: 265,
     protein_g: 14,
@@ -1399,7 +1310,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Ricotta Cheese Whole',
-    slug: 'ricotta-cheese-whole',
     serving_size_g: 100,
     calories: 174,
     protein_g: 11,
@@ -1414,7 +1324,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Cream Cheese',
-    slug: 'cream-cheese',
     serving_size_g: 100,
     calories: 342,
     protein_g: 6,
@@ -1429,7 +1338,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Butter Salted',
-    slug: 'butter-salted',
     serving_size_g: 100,
     calories: 717,
     protein_g: 0.9,
@@ -1446,7 +1354,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   // NUTS AND SEEDS (15 items)
   {
     name: 'Almonds Raw',
-    slug: 'almonds-raw',
     serving_size_g: 100,
     calories: 579,
     protein_g: 21,
@@ -1461,7 +1368,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Walnuts Raw',
-    slug: 'walnuts-raw',
     serving_size_g: 100,
     calories: 654,
     protein_g: 15,
@@ -1476,7 +1382,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Peanuts Raw',
-    slug: 'peanuts-raw',
     serving_size_g: 100,
     calories: 567,
     protein_g: 26,
@@ -1491,7 +1396,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Peanut Butter',
-    slug: 'peanut-butter',
     serving_size_g: 100,
     calories: 588,
     protein_g: 25,
@@ -1506,7 +1410,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Cashews Raw',
-    slug: 'cashews-raw',
     serving_size_g: 100,
     calories: 553,
     protein_g: 18,
@@ -1521,7 +1424,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Pecans Raw',
-    slug: 'pecans-raw',
     serving_size_g: 100,
     calories: 691,
     protein_g: 9,
@@ -1536,7 +1438,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Pistachios Raw',
-    slug: 'pistachios-raw',
     serving_size_g: 100,
     calories: 560,
     protein_g: 20,
@@ -1551,7 +1452,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Macadamia Nuts Raw',
-    slug: 'macadamia-nuts-raw',
     serving_size_g: 100,
     calories: 718,
     protein_g: 8,
@@ -1566,7 +1466,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Hazelnuts Raw',
-    slug: 'hazelnuts-raw',
     serving_size_g: 100,
     calories: 628,
     protein_g: 15,
@@ -1581,7 +1480,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Brazil Nuts Raw',
-    slug: 'brazil-nuts-raw',
     serving_size_g: 100,
     calories: 659,
     protein_g: 14,
@@ -1596,7 +1494,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Chia Seeds',
-    slug: 'chia-seeds',
     serving_size_g: 100,
     calories: 486,
     protein_g: 17,
@@ -1611,7 +1508,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Flax Seeds',
-    slug: 'flax-seeds',
     serving_size_g: 100,
     calories: 534,
     protein_g: 18,
@@ -1626,7 +1522,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Pumpkin Seeds',
-    slug: 'pumpkin-seeds',
     serving_size_g: 100,
     calories: 559,
     protein_g: 30,
@@ -1641,7 +1536,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Sunflower Seeds',
-    slug: 'sunflower-seeds',
     serving_size_g: 100,
     calories: 584,
     protein_g: 21,
@@ -1656,7 +1550,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Sesame Seeds',
-    slug: 'sesame-seeds',
     serving_size_g: 100,
     calories: 573,
     protein_g: 17,
@@ -1673,7 +1566,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   // ADDITIONAL COMMON FOODS (15 items to reach 120 total)
   {
     name: 'Honey Raw',
-    slug: 'honey-raw',
     serving_size_g: 100,
     calories: 304,
     protein_g: 0.3,
@@ -1688,7 +1580,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Olive Oil',
-    slug: 'olive-oil',
     serving_size_g: 100,
     calories: 884,
     protein_g: 0,
@@ -1703,7 +1594,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Coconut Oil',
-    slug: 'coconut-oil',
     serving_size_g: 100,
     calories: 862,
     protein_g: 0,
@@ -1718,7 +1608,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Canola Oil',
-    slug: 'canola-oil',
     serving_size_g: 100,
     calories: 884,
     protein_g: 0,
@@ -1733,7 +1622,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Maple Syrup',
-    slug: 'maple-syrup',
     serving_size_g: 100,
     calories: 260,
     protein_g: 0,
@@ -1748,7 +1636,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Dark Chocolate 70-85%',
-    slug: 'dark-chocolate-70-85',
     serving_size_g: 100,
     calories: 598,
     protein_g: 7.8,
@@ -1763,7 +1650,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Brown Sugar',
-    slug: 'brown-sugar',
     serving_size_g: 100,
     calories: 380,
     protein_g: 0,
@@ -1778,7 +1664,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'White Sugar',
-    slug: 'white-sugar',
     serving_size_g: 100,
     calories: 387,
     protein_g: 0,
@@ -1793,7 +1678,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Tofu Firm',
-    slug: 'tofu-firm',
     serving_size_g: 100,
     calories: 144,
     protein_g: 17,
@@ -1808,7 +1692,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Tempeh',
-    slug: 'tempeh',
     serving_size_g: 100,
     calories: 193,
     protein_g: 19,
@@ -1823,7 +1706,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Soy Milk Unsweetened',
-    slug: 'soy-milk-unsweetened',
     serving_size_g: 100,
     calories: 33,
     protein_g: 3.3,
@@ -1838,7 +1720,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Almond Milk Unsweetened',
-    slug: 'almond-milk-unsweetened',
     serving_size_g: 100,
     calories: 17,
     protein_g: 0.4,
@@ -1853,7 +1734,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Oat Milk Unsweetened',
-    slug: 'oat-milk-unsweetened',
     serving_size_g: 100,
     calories: 38,
     protein_g: 1,
@@ -1868,7 +1748,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Coconut Milk Unsweetened',
-    slug: 'coconut-milk-unsweetened',
     serving_size_g: 100,
     calories: 15,
     protein_g: 0.4,
@@ -1883,7 +1762,6 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
   },
   {
     name: 'Rice Cakes',
-    slug: 'rice-cakes',
     serving_size_g: 100,
     calories: 391,
     protein_g: 7,

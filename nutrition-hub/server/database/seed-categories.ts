@@ -42,7 +42,7 @@ export const seedCategories: Array<{
     slug: 'high-protein',
     name: 'High Protein',
     description: 'At least 20g protein per 100g serving',
-    icon: null,
+    icon: 'i-mdi-dumbbell',
     rules_json: JSON.stringify({
       name: 'High Protein',
       description: 'At least 20g protein per 100g',
@@ -56,7 +56,7 @@ export const seedCategories: Array<{
     slug: 'low-carb',
     name: 'Low Carb',
     description: '10g or fewer carbohydrates per 100g serving',
-    icon: null,
+    icon: 'i-mdi-carrot',
     rules_json: JSON.stringify({
       name: 'Low Carb',
       description: '10g or fewer carbs per 100g',
@@ -70,7 +70,7 @@ export const seedCategories: Array<{
     slug: 'healthy-fats',
     name: 'Healthy Fats',
     description: 'High fat content from quality sources like nuts, avocado, and fatty fish',
-    icon: null,
+    icon: 'i-mdi-avocado',
     rules_json: JSON.stringify({
       name: 'Healthy Fats',
       description: 'High fat from quality sources (nuts, avocado, salmon)',
@@ -84,7 +84,7 @@ export const seedCategories: Array<{
     slug: 'high-fiber',
     name: 'High Fiber',
     description: 'At least 5g of dietary fiber per 100g serving',
-    icon: null,
+    icon: 'i-mdi-grain',
     rules_json: JSON.stringify({
       name: 'High Fiber',
       description: 'At least 5g fiber per 100g',
@@ -98,7 +98,7 @@ export const seedCategories: Array<{
     slug: 'low-calorie',
     name: 'Low Calorie',
     description: '100 calories or fewer per 100g serving',
-    icon: null,
+    icon: 'i-mdi-leaf',
     rules_json: JSON.stringify({
       name: 'Low Calorie',
       description: '100 calories or fewer per 100g',

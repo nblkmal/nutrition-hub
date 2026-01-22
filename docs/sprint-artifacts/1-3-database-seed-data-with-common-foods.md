@@ -1,6 +1,6 @@
 # Story 1.3: Database Seed Data with Common Foods
 
-Status: Ready for Review
+Status: done
 
 ## Story
 
@@ -617,15 +617,25 @@ export const seedFoods: Omit<FoodDbRow, 'id' | 'created_at' | 'updated_at'>[] = 
 
 ### Code Review Fixes Applied
 
-**Issues Found and Fixed:**
+**Initial Implementation Issues Found and Fixed:**
 1. ✅ Fixed ESM module detection in seed.ts (was using unreliable `import.meta.url` comparison)
 2. ✅ Added calorie validation function that checks variance ±10% from formula
 3. ✅ Fixed documentation: removed incorrect "Test Cat" reference (only 5 categories exist)
 4. ✅ Staged all new files for git commit
 
+**Second Code Review Fixes Applied (2026-01-22):**
+5. ✅ **HIGH** - Removed hardcoded slugs from seed-data.ts - slugs now generated dynamically in seed.ts
+6. ✅ **HIGH** - Improved ESM module detection using `import.meta.url` and multiple fallback checks
+7. ✅ **HIGH** - Made calorie validation THROW ERROR on failure (was just warning before)
+8. ✅ **HIGH** - Added slug collision detection with automatic suffix resolution
+9. ✅ **MEDIUM** - Added `FoodInsertData` type to properly handle optional fields with DB defaults
+10. ✅ **MEDIUM** - Added category icons: `i-mdi-dumbbell`, `i-mdi-carrot`, `i-mdi-avocado`, `i-mdi-grain`, `i-mdi-leaf`
+11. ✅ **MEDIUM** - Updated seed.ts to validate calories BEFORE insertion (fail-fast approach)
+12. ✅ **LOW** - Added documentation comment for match score threshold (50) in seed.ts
+
 **Known Issue (System):**
 - Node.js v16.0.0 detected (project requires v20.19+)
-- Calorie validation warning will display when seed is run with correct Node version
+- Calorie validation will throw error when seed is run with correct Node version if any foods exceed ±10% variance
 - Some foods may show variance >10% due to USDA data including non-calorie nutrients (alcohol, polyols)
 
 ### Context Reference
@@ -679,10 +689,11 @@ None - implementation completed without issues.
 ### File List
 
 **New Files Created:**
-- `utils/slugify.ts` - URL-safe slug generation utility
-- `server/database/seed-data.ts` - 125 common foods with accurate USDA nutrition data
-- `server/database/seed-categories.ts` - 5 nutrition categories with rules and match scoring
-- `server/database/seed.ts` - Main seed script with idempotency and reset support
+- `nutrition-hub/utils/slugify.ts` - URL-safe slug generation utility
+- `nutrition-hub/server/database/seed-data.ts` - 125 common foods with accurate USDA nutrition data (slugs generated dynamically)
+- `nutrition-hub/server/database/seed-categories.ts` - 5 nutrition categories with rules, match scoring, and icons
+- `nutrition-hub/server/database/seed.ts` - Main seed script with idempotency, reset support, and slug collision detection
 
 **Modified Files:**
-- `package.json` - Added `seed` and `seed:reset` npm scripts
+- `nutrition-hub/package.json` - Added `seed` and `seed:reset` npm scripts
+- `nutrition-hub/types/database.ts` - Added `FoodInsertData` interface for type-safe insertions with optional fields
