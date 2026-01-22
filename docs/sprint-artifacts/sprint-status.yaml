@@ -42,7 +42,7 @@ development_status:
   1-2-sqlite-database-schema-implementation: done
   1-3-database-seed-data-with-common-foods: done
   1-4-server-routes-infrastructure-setup: done
-  1-5-typescript-type-definitions: backlog
+  1-5-typescript-type-definitions: done
   1-6-vercel-deployment-configuration: backlog
   1-7-error-handling-and-logging-infrastructure: backlog
   epic-1-retrospective: optional
