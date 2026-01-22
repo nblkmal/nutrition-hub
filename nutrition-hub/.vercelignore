@@ -1,0 +1,36 @@
+# Nuxt build outputs
+.nuxt
+.nitro
+.cache
+.output
+dist
+
+# Node dependencies
+node_modules
+
+# Environment files
+.env
+.env.*
+.env.local
+!.env.example
+
+# Development files
+*.log
+logs
+.DS_Store
+.fleet
+.idea
+.vscode
+
+# Database files (use Vercel Blob instead)
+data/*.db
+data/*.sqlite
+
+# Test files
+*.test.ts
+*.spec.ts
+__tests__
+coverage
+
+# Documentation
+docs
