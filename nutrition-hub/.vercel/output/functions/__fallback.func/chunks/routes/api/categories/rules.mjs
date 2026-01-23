@@ -1,4 +1,4 @@
-import { d as defineEventHandler, g as getDb, s as successResponse, c as createError } from '../../../nitro/nitro.mjs';
+import { d as defineEventHandler, g as getDb, s as successResponse, e as createError } from '../../../nitro/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';

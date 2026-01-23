@@ -4301,7 +4301,7 @@ function _expandFromEnv(value) {
 const _inlineRuntimeConfig = {
   "app": {
     "baseURL": "/",
-    "buildId": "7a5b67ab-880f-4a1c-b034-8fa33fdf8638",
+    "buildId": "7618471a-2dd2-49a9-acd1-9e0a83a61fd0",
     "buildAssetsDir": "/_nuxt/",
     "cdnURL": ""
   },
@@ -4882,6 +4882,43 @@ function publicAssetsURL(...path) {
   return path.length ? joinRelativeURL(publicBase, ...path) : publicBase;
 }
 
+var ErrorCode = /* @__PURE__ */ ((ErrorCode2) => {
+  ErrorCode2["FOOD_NOT_FOUND"] = "FOOD_NOT_FOUND";
+  ErrorCode2["CATEGORY_NOT_FOUND"] = "CATEGORY_NOT_FOUND";
+  ErrorCode2["API_QUOTA_EXCEEDED"] = "API_QUOTA_EXCEEDED";
+  ErrorCode2["NETWORK_ERROR"] = "NETWORK_ERROR";
+  ErrorCode2["INTERNAL_ERROR"] = "INTERNAL_ERROR";
+  return ErrorCode2;
+})(ErrorCode || {});
+function createNotFoundError(resource, id) {
+  return createError$1({
+    statusCode: 404,
+    message: `${resource} not found`,
+    statusMessage: `${resource.toUpperCase()}_NOT_FOUND`
+  });
+}
+function createApiError(message, code, statusCode) {
+  return createError$1({
+    statusCode,
+    message,
+    statusMessage: code
+  });
+}
+
+function log(level, message, meta) {
+  const timestamp = (/* @__PURE__ */ new Date()).toISOString();
+  const logEntry = {
+    timestamp,
+    level,
+    message,
+    ...meta
+  };
+  console.log(JSON.stringify(logEntry));
+}
+function logError(error, context) {
+  log("error", error.message, { stack: error.stack, ...context });
+}
+
 function successResponse(data, meta) {
   const response = {
     data,
@@ -5125,5 +5162,5 @@ const listener = function(req, res) {
   return handler(req, res);
 };
 
-export { $fetch$1 as $, stringifyParsedURL as A, stringifyQuery as B, parseQuery as C, toRouteMatcher as D, createRouter$1 as E, defu as F, withTrailingSlash as G, withoutTrailingSlash as H, listener as I, getRouterParam as a, buildAssetsURL as b, createError$1 as c, defineEventHandler as d, getResponseStatusText as e, getResponseStatus as f, getDb as g, defineRenderHandler as h, getQuery as i, destr as j, getRouteRules as k, useNitroApp as l, klona as m, defuFn as n, hasProtocol as o, publicAssetsURL as p, isScriptProtocol as q, joinURL as r, successResponse as s, sanitizeStatusCode as t, useRuntimeConfig as u, getContext as v, withQuery as w, baseURL as x, createHooks as y, isEqual as z };
+export { $fetch$1 as $, baseURL as A, createHooks as B, isEqual as C, stringifyParsedURL as D, ErrorCode as E, stringifyQuery as F, parseQuery as G, toRouteMatcher as H, createRouter$1 as I, defu as J, withTrailingSlash as K, withoutTrailingSlash as L, listener as M, getRouterParam as a, createNotFoundError as b, createApiError as c, defineEventHandler as d, createError$1 as e, buildAssetsURL as f, getDb as g, getResponseStatusText as h, getResponseStatus as i, defineRenderHandler as j, getQuery as k, logError as l, destr as m, getRouteRules as n, useNitroApp as o, publicAssetsURL as p, klona as q, defuFn as r, successResponse as s, hasProtocol as t, useRuntimeConfig as u, isScriptProtocol as v, joinURL as w, withQuery as x, sanitizeStatusCode as y, getContext as z };
 //# sourceMappingURL=nitro.mjs.map

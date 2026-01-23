@@ -1,4 +1,4 @@
-import { d as defineEventHandler, g as getDb, a as getRouterParam, c as createError } from '../../../nitro/nitro.mjs';
+import { d as defineEventHandler, g as getDb, a as getRouterParam, c as createApiError, E as ErrorCode, b as createNotFoundError, l as logError } from '../../../nitro/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -17,27 +17,15 @@ const _categoryId_ = defineEventHandler(async (event) => {
     const db = getDb();
     const categoryId = getRouterParam(event, "categoryId");
     if (!categoryId) {
-      throw createError({
-        statusCode: 400,
-        message: "categoryId parameter is required",
-        statusMessage: "VALIDATION_ERROR"
-      });
+      throw createApiError("categoryId parameter is required", ErrorCode.INTERNAL_ERROR, 400);
     }
-    throw createError({
-      statusCode: 404,
-      message: "Category not found",
-      statusMessage: "CATEGORY_NOT_FOUND"
-    });
+    throw createNotFoundError("Category", categoryId);
   } catch (error) {
-    console.error("Error in /api/categories/:categoryId:", error);
+    logError(error instanceof Error ? error : new Error(String(error)), { route: "/api/categories/:categoryId" });
     if (error && typeof error === "object" && "statusCode" in error) {
       throw error;
     }
-    throw createError({
-      statusCode: 500,
-      message: "Internal server error",
-      statusMessage: "INTERNAL_ERROR"
-    });
+    throw createApiError("Internal server error", ErrorCode.INTERNAL_ERROR, 500);
   }
 });
 

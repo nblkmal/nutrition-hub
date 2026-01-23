@@ -2,6 +2,8 @@
 // GET/PUT/DELETE /api/categories/:categoryId - Single category operations
 
 import { getDb } from '../../utils/database'
+import { logError } from '../../utils/logger'
+import { createNotFoundError, createApiError, ErrorCode } from '../../utils/errors'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -9,11 +11,7 @@ export default defineEventHandler(async (event) => {
     const categoryId = getRouterParam(event, 'categoryId')
 
     if (!categoryId) {
-      throw createError({
-        statusCode: 400,
-        message: 'categoryId parameter is required',
-        statusMessage: 'VALIDATION_ERROR',
-      })
+      throw createApiError('categoryId parameter is required', ErrorCode.INTERNAL_ERROR, 400)
     }
 
     // TODO: Implement route logic in Epic 3 (Story 3.3)
@@ -22,22 +20,14 @@ export default defineEventHandler(async (event) => {
     // - For PUT: Update category (admin only)
     // - For DELETE: Delete category (admin only)
 
-    throw createError({
-      statusCode: 404,
-      message: 'Category not found',
-      statusMessage: 'CATEGORY_NOT_FOUND',
-    })
+    throw createNotFoundError('Category', categoryId)
   } catch (error) {
-    console.error('Error in /api/categories/:categoryId:', error)
+    logError(error instanceof Error ? error : new Error(String(error)), { route: '/api/categories/:categoryId' })
 
     if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
 
-    throw createError({
-      statusCode: 500,
-      message: 'Internal server error',
-      statusMessage: 'INTERNAL_ERROR',
-    })
+    throw createApiError('Internal server error', ErrorCode.INTERNAL_ERROR, 500)
   }
 })

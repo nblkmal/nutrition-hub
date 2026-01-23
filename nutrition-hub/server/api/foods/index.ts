@@ -3,6 +3,8 @@
 
 import { getDb } from '../../utils/database'
 import { successResponse } from '../../utils/response'
+import { logError } from '../../utils/logger'
+import { createApiError, ErrorCode } from '../../utils/errors'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -15,11 +17,7 @@ export default defineEventHandler(async (event) => {
 
     return successResponse([], { total: 0, page: 1, limit: 20 })
   } catch (error) {
-    console.error('Error in /api/foods:', error)
-    throw createError({
-      statusCode: 500,
-      message: 'Internal server error',
-      statusMessage: 'INTERNAL_ERROR',
-    })
+    logError(error instanceof Error ? error : new Error(String(error)), { route: '/api/foods' })
+    throw createApiError('Internal server error', ErrorCode.INTERNAL_ERROR, 500)
   }
 })

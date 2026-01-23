@@ -1,4 +1,4 @@
-import { d as defineEventHandler, g as getDb, s as successResponse, c as createError } from '../../../nitro/nitro.mjs';
+import { d as defineEventHandler, g as getDb, s as successResponse, l as logError, c as createApiError, E as ErrorCode } from '../../../nitro/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -23,12 +23,8 @@ const analytics = defineEventHandler(async (event) => {
       categoryOverlaps: []
     });
   } catch (error) {
-    console.error("Error in /api/admin/analytics:", error);
-    throw createError({
-      statusCode: 500,
-      message: "Internal server error",
-      statusMessage: "INTERNAL_ERROR"
-    });
+    logError(error instanceof Error ? error : new Error(String(error)), { route: "/api/admin/analytics" });
+    throw createApiError("Internal server error", ErrorCode.INTERNAL_ERROR, 500);
   }
 });
 

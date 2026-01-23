@@ -1,4 +1,4 @@
-import { d as defineEventHandler, g as getDb, a as getRouterParam, c as createError } from '../../../nitro/nitro.mjs';
+import { d as defineEventHandler, g as getDb, a as getRouterParam, c as createApiError, E as ErrorCode, b as createNotFoundError, l as logError } from '../../../nitro/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -17,27 +17,15 @@ const _foodId_ = defineEventHandler(async (event) => {
     const db = getDb();
     const foodId = getRouterParam(event, "foodId");
     if (!foodId) {
-      throw createError({
-        statusCode: 400,
-        message: "foodId parameter is required",
-        statusMessage: "VALIDATION_ERROR"
-      });
+      throw createApiError("foodId parameter is required", ErrorCode.INTERNAL_ERROR, 400);
     }
-    throw createError({
-      statusCode: 404,
-      message: "Food not found",
-      statusMessage: "FOOD_NOT_FOUND"
-    });
+    throw createNotFoundError("Food", foodId);
   } catch (error) {
-    console.error("Error in /api/foods/:foodId:", error);
+    logError(error instanceof Error ? error : new Error(String(error)), { route: "/api/foods/:foodId" });
     if (error && typeof error === "object" && "statusCode" in error) {
       throw error;
     }
-    throw createError({
-      statusCode: 500,
-      message: "Internal server error",
-      statusMessage: "INTERNAL_ERROR"
-    });
+    throw createApiError("Internal server error", ErrorCode.INTERNAL_ERROR, 500);
   }
 });
 

@@ -2,6 +2,8 @@
 // GET/PUT/DELETE /api/foods/:foodId - Single food operations
 
 import { getDb } from '../../utils/database'
+import { logError } from '../../utils/logger'
+import { createNotFoundError, createApiError, ErrorCode } from '../../utils/errors'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -9,11 +11,7 @@ export default defineEventHandler(async (event) => {
     const foodId = getRouterParam(event, 'foodId')
 
     if (!foodId) {
-      throw createError({
-        statusCode: 400,
-        message: 'foodId parameter is required',
-        statusMessage: 'VALIDATION_ERROR',
-      })
+      throw createApiError('foodId parameter is required', ErrorCode.INTERNAL_ERROR, 400)
     }
 
     // TODO: Implement route logic in Epic 2
@@ -22,22 +20,14 @@ export default defineEventHandler(async (event) => {
     // - For PUT: Update food (admin only)
     // - For DELETE: Delete food (admin only)
 
-    throw createError({
-      statusCode: 404,
-      message: 'Food not found',
-      statusMessage: 'FOOD_NOT_FOUND',
-    })
+    throw createNotFoundError('Food', foodId)
   } catch (error) {
-    console.error('Error in /api/foods/:foodId:', error)
+    logError(error instanceof Error ? error : new Error(String(error)), { route: '/api/foods/:foodId' })
 
     if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
 
-    throw createError({
-      statusCode: 500,
-      message: 'Internal server error',
-      statusMessage: 'INTERNAL_ERROR',
-    })
+    throw createApiError('Internal server error', ErrorCode.INTERNAL_ERROR, 500)
   }
 })
