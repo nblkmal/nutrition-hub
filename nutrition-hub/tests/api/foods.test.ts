@@ -250,3 +250,123 @@ describe('Food Search API - Pagination Tests', () => {
     expect(data2.meta.pageSize).toBe(20)
   })
 })
+
+describe('Food Detail API - GET /api/foods/:foodId', () => {
+  // Note: Database IDs start at 252 due to seed data
+  const CHICKEN_BREAST_ID = 252
+  const CHICKEN_BREAST_SLUG = 'chicken-breast'
+
+  it('should return a single food by numeric ID', async () => {
+    const response = await fetch(`http://localhost:3000/api/foods/${CHICKEN_BREAST_ID}`)
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data).toHaveProperty('success', true)
+    expect(data).toHaveProperty('data')
+    expect(data.data).not.toHaveProperty('length') // Not an array
+    expect(data.data).toHaveProperty('id', CHICKEN_BREAST_ID)
+    expect(data.data).toHaveProperty('name')
+    expect(data.data).toHaveProperty('slug')
+  })
+
+  it('should return a single food by slug', async () => {
+    const response = await fetch(`http://localhost:3000/api/foods/${CHICKEN_BREAST_SLUG}`)
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data).toHaveProperty('success', true)
+    expect(data).toHaveProperty('data')
+    expect(data.data).toHaveProperty('id')
+    expect(data.data).toHaveProperty('name', 'Chicken Breast')
+    expect(data.data).toHaveProperty('slug', CHICKEN_BREAST_SLUG)
+  })
+
+  it('should return 404 for non-existent food ID', async () => {
+    const response = await fetch('http://localhost:3000/api/foods/99999')
+    const data = await response.json()
+
+    expect(response.status).toBe(404)
+    expect(data).toHaveProperty('success', false)
+    expect(data).toHaveProperty('error')
+    expect(data.error).toHaveProperty('message', 'Food not found')
+    expect(data.error).toHaveProperty('code', 'FOOD_NOT_FOUND')
+    expect(data.error).toHaveProperty('statusCode', 404)
+  })
+
+  it('should return 404 for non-existent slug', async () => {
+    const response = await fetch('http://localhost:3000/api/foods/non-existent-food')
+    const data = await response.json()
+
+    expect(response.status).toBe(404)
+    expect(data).toHaveProperty('success', false)
+    expect(data.error).toHaveProperty('code', 'FOOD_NOT_FOUND')
+  })
+
+  it('should return all fields in camelCase format', async () => {
+    const response = await fetch(`http://localhost:3000/api/foods/${CHICKEN_BREAST_ID}`)
+    const data = await response.json()
+
+    const food = data.data
+
+    // Check camelCase fields exist
+    expect(food).toHaveProperty('servingSizeG')
+    expect(food).toHaveProperty('proteinG')
+    expect(food).toHaveProperty('carbohydratesTotalG')
+    expect(food).toHaveProperty('fatTotalG')
+    expect(food).toHaveProperty('fatSaturatedG')
+    expect(food).toHaveProperty('fiberG')
+    expect(food).toHaveProperty('sugarG')
+    expect(food).toHaveProperty('sodiumMg')
+    expect(food).toHaveProperty('potassiumMg')
+    expect(food).toHaveProperty('cholesterolMg')
+    expect(food).toHaveProperty('dataSource')
+    expect(food).toHaveProperty('createdAt')
+    expect(food).toHaveProperty('updatedAt')
+
+    // Check no snake_case fields
+    expect(food).not.toHaveProperty('serving_size_g')
+    expect(food).not.toHaveProperty('protein_g')
+    expect(food).not.toHaveProperty('carbohydrates_total_g')
+  })
+
+  it('should return ISO 8601 timestamps', async () => {
+    const response = await fetch(`http://localhost:3000/api/foods/${CHICKEN_BREAST_ID}`)
+    const data = await response.json()
+
+    const food = data.data
+    expect(food.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)
+    expect(food.updatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)
+  })
+
+  it('should return comprehensive nutrition data', async () => {
+    const response = await fetch(`http://localhost:3000/api/foods/${CHICKEN_BREAST_ID}`)
+    const data = await response.json()
+
+    const food = data.data
+
+    // Verify nutrition fields are present and numeric
+    expect(typeof food.servingSizeG).toBe('number')
+    expect(typeof food.calories).toBe('number')
+    expect(typeof food.proteinG).toBe('number')
+    expect(typeof food.carbohydratesTotalG).toBe('number')
+    expect(typeof food.fatTotalG).toBe('number')
+    expect(typeof food.fatSaturatedG).toBe('number')
+    expect(typeof food.fiberG).toBe('number')
+    expect(typeof food.sugarG).toBe('number')
+    expect(typeof food.sodiumMg).toBe('number')
+    expect(typeof food.potassiumMg).toBe('number')
+    expect(typeof food.cholesterolMg).toBe('number')
+  })
+
+  it('should return same food for ID and slug lookup', async () => {
+    const responseById = await fetch(`http://localhost:3000/api/foods/${CHICKEN_BREAST_ID}`)
+    const dataById = await responseById.json()
+
+    const responseBySlug = await fetch(`http://localhost:3000/api/foods/${CHICKEN_BREAST_SLUG}`)
+    const dataBySlug = await responseBySlug.json()
+
+    expect(dataById.data.id).toBe(dataBySlug.data.id)
+    expect(dataById.data.name).toBe(dataBySlug.data.name)
+    expect(dataById.data.slug).toBe(dataBySlug.data.slug)
+  })
+})

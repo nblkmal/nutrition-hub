@@ -1,6 +1,8 @@
 // server/utils/errors.ts
 // Error code constants and helper functions for consistent error handling
 
+import { logError } from './logger'
+
 /**
  * Standard error codes used across the application
  * These codes are used for client-side error handling and debugging
@@ -17,9 +19,31 @@ export enum ErrorCode {
  * Creates a standardized 404 error for resource not found scenarios
  * @param resource - Resource type name (e.g., 'Food', 'Category')
  * @param id - Resource ID that was not found
- * @throws Always throws a NuxtError with statusCode 404
+ * @param options - Optional configuration
+ * @param options.returnResponse - If true, returns error response object instead of throwing
+ * @param options.event - Nuxt event context (required if returnResponse is true)
+ * @throws Always throws a NuxtError with statusCode 404 (if returnResponse is false)
  */
-export function createNotFoundError(resource: string, id: string | number) {
+export function createNotFoundError(
+  resource: string,
+  id: string | number,
+  options?: { returnResponse?: boolean; event?: any }
+) {
+  const errorResponse = {
+    error: {
+      message: `${resource} not found`,
+      code: `${resource.toUpperCase()}_NOT_FOUND`,
+      statusCode: 404
+    },
+    success: false
+  }
+
+  if (options?.returnResponse && options.event) {
+    setResponseStatus(options.event, 404)
+    logError(new Error(`${resource} not found`), { route: '/api/foods/:foodId', [resource.toLowerCase()]: id })
+    return errorResponse
+  }
+
   return createError({
     statusCode: 404,
     message: `${resource} not found`,

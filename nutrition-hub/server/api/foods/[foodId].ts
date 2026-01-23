@@ -2,10 +2,13 @@
 // GET/PUT/DELETE /api/foods/:foodId - Single food operations
 
 import { getDb } from '../../utils/database'
-import { logError } from '../../utils/logger'
+import { transformFood } from '../../utils/transform'
+import { logApiCall, logError } from '../../utils/logger'
 import { createNotFoundError, createApiError, ErrorCode } from '../../utils/errors'
 
 export default defineEventHandler(async (event) => {
+  const startTime = Date.now()
+
   try {
     const db = getDb()
     const foodId = getRouterParam(event, 'foodId')
@@ -14,15 +17,30 @@ export default defineEventHandler(async (event) => {
       throw createApiError('foodId parameter is required', ErrorCode.INTERNAL_ERROR, 400)
     }
 
-    // TODO: Implement route logic in Epic 2
-    // - Check if foodId is numeric (ID lookup) or string (slug lookup)
-    // - For GET: Fetch food by ID or slug, return 404 if not found
-    // - For PUT: Update food (admin only)
-    // - For DELETE: Delete food (admin only)
+    // Query by ID or slug (parameterized to prevent SQL injection)
+    const food = db.prepare(`
+      SELECT * FROM foods WHERE id = ? OR slug = ?
+    `).get(foodId, foodId) as Record<string, unknown> | undefined
 
-    throw createNotFoundError('Food', foodId)
+    if (!food) {
+      // Return 404 with proper error format using createNotFoundError utility
+      return createNotFoundError('Food', foodId, { returnResponse: true, event })
+    }
+
+    // Transform snake_case to camelCase
+    const transformedFood = transformFood(food)
+
+    const duration = Date.now() - startTime
+    logApiCall('/api/foods/:foodId', duration)
+
+    return {
+      data: transformedFood,
+      success: true
+    }
   } catch (error) {
-    logError(error instanceof Error ? error : new Error(String(error)), { route: '/api/foods/:foodId' })
+    logError(error instanceof Error ? error : new Error(String(error)), {
+      route: '/api/foods/:foodId'
+    })
 
     if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
