@@ -51,7 +51,7 @@ development_status:
   epic-2: in-progress
   2-1-food-search-api-with-sqlite-query: done
   2-2-food-detail-api-endpoint: done
-  2-3-calorieninjas-api-integration-with-caching: backlog
+  2-3-calorieninjas-api-integration-with-caching: done
   2-4-search-autocomplete-composable: backlog
   2-5-food-detail-page-ssr-with-seo: backlog
   2-6-searchbar-component-with-autocomplete: backlog
