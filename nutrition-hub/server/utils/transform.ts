@@ -5,6 +5,18 @@ import type { FoodDbRow, CategoryDbRow } from '~/types/database'
 import type { Food, Category, CategoryRule } from '~/types/api'
 
 /**
+ * Convert SQLite timestamp to ISO 8601 format
+ * @param timestamp - SQLite timestamp string
+ * @returns ISO 8601 formatted timestamp string
+ */
+function toIso8601(timestamp: string): string {
+  // SQLite returns "YYYY-MM-DD HH:MM:SS" format
+  // Convert to ISO 8601: "YYYY-MM-DDTHH:MM:SSZ"
+  const normalized = timestamp.replace(' ', 'T') + 'Z'
+  return normalized
+}
+
+/**
  * Transform a database food row (snake_case) to API response format (camelCase)
  * @param row - Database row with snake_case field names
  * @returns Food object with camelCase field names for API responses
@@ -26,8 +38,8 @@ export function transformFood(row: FoodDbRow): Food {
     potassiumMg: row.potassium_mg,
     cholesterolMg: row.cholesterol_mg,
     dataSource: row.data_source,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    createdAt: toIso8601(row.created_at),
+    updatedAt: toIso8601(row.updated_at),
   }
 }
 
@@ -55,6 +67,6 @@ export function transformCategory(row: CategoryDbRow): Category {
     rulesJson, // Parsed JSON object (not string like DB)
     displayOrder: row.display_order,
     isActive: Boolean(row.is_active), // Convert number (0/1) to boolean
-    createdAt: row.created_at,
+    createdAt: toIso8601(row.created_at),
   }
 }
