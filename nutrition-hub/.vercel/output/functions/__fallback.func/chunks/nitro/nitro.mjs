@@ -2546,10 +2546,10 @@ function createNodeFetch() {
     return l(input, { ...nodeFetchOptions, ...init });
   };
 }
-const fetch = globalThis.fetch ? (...args) => globalThis.fetch(...args) : createNodeFetch();
+const fetch$1 = globalThis.fetch ? (...args) => globalThis.fetch(...args) : createNodeFetch();
 const Headers$1 = globalThis.Headers || s$1;
 const AbortController = globalThis.AbortController || i;
-const ofetch = createFetch({ fetch, Headers: Headers$1, AbortController });
+const ofetch = createFetch({ fetch: fetch$1, Headers: Headers$1, AbortController });
 const $fetch$1 = ofetch;
 
 function wrapToPromise(value) {
@@ -4301,7 +4301,7 @@ function _expandFromEnv(value) {
 const _inlineRuntimeConfig = {
   "app": {
     "baseURL": "/",
-    "buildId": "7618471a-2dd2-49a9-acd1-9e0a83a61fd0",
+    "buildId": "1eb22ef0-726c-4832-b85d-2bff9c8627a4",
     "buildAssetsDir": "/_nuxt/",
     "cdnURL": ""
   },
@@ -4882,15 +4882,47 @@ function publicAssetsURL(...path) {
   return path.length ? joinRelativeURL(publicBase, ...path) : publicBase;
 }
 
+function log(level, message, meta) {
+  const timestamp = (/* @__PURE__ */ new Date()).toISOString();
+  const logEntry = {
+    timestamp,
+    level,
+    message,
+    ...meta
+  };
+  console.log(JSON.stringify(logEntry));
+}
+function logApiCall$1(endpoint, duration) {
+  log("info", "API_CALL", { endpoint, duration });
+}
+function logError(error, context) {
+  log("error", error.message, { stack: error.stack, ...context });
+}
+
 var ErrorCode = /* @__PURE__ */ ((ErrorCode2) => {
   ErrorCode2["FOOD_NOT_FOUND"] = "FOOD_NOT_FOUND";
   ErrorCode2["CATEGORY_NOT_FOUND"] = "CATEGORY_NOT_FOUND";
   ErrorCode2["API_QUOTA_EXCEEDED"] = "API_QUOTA_EXCEEDED";
+  ErrorCode2["EXTERNAL_API_ERROR"] = "EXTERNAL_API_ERROR";
+  ErrorCode2["API_REQUEST_FAILED"] = "API_REQUEST_FAILED";
   ErrorCode2["NETWORK_ERROR"] = "NETWORK_ERROR";
   ErrorCode2["INTERNAL_ERROR"] = "INTERNAL_ERROR";
   return ErrorCode2;
 })(ErrorCode || {});
-function createNotFoundError(resource, id) {
+function createNotFoundError(resource, id, options) {
+  const errorResponse = {
+    error: {
+      message: `${resource} not found`,
+      code: `${resource.toUpperCase()}_NOT_FOUND`,
+      statusCode: 404
+    },
+    success: false
+  };
+  if ((options == null ? void 0 : options.returnResponse) && options.event) {
+    setResponseStatus(options.event, 404);
+    logError(new Error(`${resource} not found`), { route: "/api/foods/:foodId", [resource.toLowerCase()]: id });
+    return errorResponse;
+  }
   return createError$1({
     statusCode: 404,
     message: `${resource} not found`,
@@ -4905,18 +4937,294 @@ function createApiError(message, code, statusCode) {
   });
 }
 
-function log(level, message, meta) {
-  const timestamp = (/* @__PURE__ */ new Date()).toISOString();
-  const logEntry = {
-    timestamp,
-    level,
-    message,
-    ...meta
-  };
-  console.log(JSON.stringify(logEntry));
+async function fetchFromCalorieNinjas(query) {
+  const config = useRuntimeConfig();
+  const apiKey = config.calorieNinjasApiKey;
+  if (!apiKey) {
+    logError(new Error("CalorieNinjas API key not configured"), {
+      operation: "fetchFromCalorieNinjas",
+      query
+    });
+    throw createApiError("API configuration error", ErrorCode.INTERNAL_ERROR, 500);
+  }
+  const url = `https://api.calorieninjas.com/v1/nutrition?query=${encodeURIComponent(query)}`;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "X-Api-Key": apiKey,
+        "Content-Type": "application/json"
+      }
+    });
+    if (response.status === 429) {
+      throw createApiError("API quota exceeded", ErrorCode.API_QUOTA_EXCEEDED, 429);
+    }
+    if (response.status >= 500) {
+      logError(new Error(`CalorieNinjas API server error: ${response.status}`), {
+        operation: "fetchFromCalorieNinjas",
+        query,
+        statusCode: response.status
+      });
+      throw createApiError("External API server error", ErrorCode.EXTERNAL_API_ERROR, response.status);
+    }
+    if (response.status >= 400 && response.status !== 429) {
+      logError(new Error(`CalorieNinjas API client error: ${response.status}`), {
+        operation: "fetchFromCalorieNinjas",
+        query,
+        statusCode: response.status
+      });
+      throw createApiError("API request failed", ErrorCode.API_REQUEST_FAILED, response.status);
+    }
+    const data = await response.json();
+    if (!data.items || !Array.isArray(data.items)) {
+      logError(new Error("Invalid CalorieNinjas API response structure"), {
+        operation: "fetchFromCalorieNinjas",
+        query,
+        response: data
+      });
+      throw createApiError("Invalid API response", ErrorCode.API_REQUEST_FAILED, 500);
+    }
+    return data;
+  } catch (error) {
+    if (error && typeof error === "object" && "statusCode" in error) {
+      throw error;
+    }
+    logError(error instanceof Error ? error : new Error(String(error)), {
+      operation: "fetchFromCalorieNinjas",
+      query
+    });
+    throw createApiError("API request failed", ErrorCode.API_REQUEST_FAILED, 500);
+  }
 }
-function logError(error, context) {
-  log("error", error.message, { stack: error.stack, ...context });
+
+function slugify(text) {
+  return text.toLowerCase().trim().replace(/'+/g, "").replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+const DAILY_LIMIT = 1e3;
+const MONTHLY_LIMIT = 1e4;
+const WARNING_THRESHOLD = 0.8;
+function getQuotaStatus() {
+  const db = getDb();
+  const today = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+  const monthStart = new Date((/* @__PURE__ */ new Date()).getFullYear(), (/* @__PURE__ */ new Date()).getMonth(), 1).toISOString().split("T")[0];
+  const dailyResult = db.get(
+    "SELECT COUNT(*) as count FROM api_usage_logs WHERE date(created_at) = ?",
+    [today]
+  );
+  const monthlyResult = db.get(
+    "SELECT COUNT(*) as count FROM api_usage_logs WHERE created_at >= ?",
+    [monthStart]
+  );
+  const dailyCalls = (dailyResult == null ? void 0 : dailyResult.count) || 0;
+  const monthlyCalls = (monthlyResult == null ? void 0 : monthlyResult.count) || 0;
+  return {
+    dailyCalls,
+    monthlyCalls,
+    dailyLimit: DAILY_LIMIT,
+    monthlyLimit: MONTHLY_LIMIT,
+    dailyPercentage: dailyCalls / DAILY_LIMIT,
+    monthlyPercentage: monthlyCalls / MONTHLY_LIMIT,
+    isDailyQuotaExceeded: dailyCalls >= DAILY_LIMIT,
+    isMonthlyQuotaExceeded: monthlyCalls >= MONTHLY_LIMIT,
+    isDailyWarning: dailyCalls >= DAILY_LIMIT * WARNING_THRESHOLD,
+    isMonthlyWarning: monthlyCalls >= MONTHLY_LIMIT * WARNING_THRESHOLD
+  };
+}
+function logApiCall() {
+  const db = getDb();
+  db.run("INSERT INTO api_usage_logs (api_endpoint) VALUES (?)", ["calorieninjas"]);
+  const status = getQuotaStatus();
+  if (status.isMonthlyWarning && !status.isMonthlyQuotaExceeded) {
+    console.warn(`WARNING: CalorieNinjas API quota at ${(status.monthlyPercentage * 100).toFixed(1)}%`);
+  }
+  if (status.isMonthlyQuotaExceeded) {
+    console.error(`CRITICAL: CalorieNinjas API quota exceeded!`);
+  }
+}
+function shouldAllowApiCall() {
+  const status = getQuotaStatus();
+  return !status.isMonthlyQuotaExceeded;
+}
+function logSearchMetric(query, slug, cacheHit, responseTimeMs) {
+  const db = getDb();
+  db.run(
+    "INSERT INTO search_metrics (query, slug, cache_hit, response_time_ms) VALUES (?, ?, ?, ?)",
+    [query, slug, cacheHit ? 1 : 0, responseTimeMs]
+  );
+}
+function getCacheMetrics() {
+  const db = getDb();
+  const today = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+  const cacheHits = db.get(
+    "SELECT COUNT(*) as count FROM search_metrics WHERE cache_hit = 1 AND date(created_at) = ?",
+    [today]
+  );
+  const cacheMisses = db.get(
+    "SELECT COUNT(*) as count FROM search_metrics WHERE cache_hit = 0 AND date(created_at) = ?",
+    [today]
+  );
+  const avgResponse = db.get(
+    "SELECT AVG(response_time_ms) as avg FROM search_metrics WHERE date(created_at) = ?",
+    [today]
+  );
+  const hits = (cacheHits == null ? void 0 : cacheHits.count) || 0;
+  const misses = (cacheMisses == null ? void 0 : cacheMisses.count) || 0;
+  const total = hits + misses;
+  const hitRate = total > 0 ? hits / total * 100 : 0;
+  return {
+    totalLookups: total,
+    cacheHits: hits,
+    cacheMisses: misses,
+    cacheHitRate: hitRate,
+    averageResponseTimeMs: (avgResponse == null ? void 0 : avgResponse.avg) || 0
+  };
+}
+
+function toIso8601(timestamp) {
+  const normalized = timestamp.replace(" ", "T") + "Z";
+  return normalized;
+}
+function transformFood(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    servingSizeG: row.serving_size_g,
+    calories: row.calories,
+    proteinG: row.protein_g,
+    carbohydratesTotalG: row.carbohydrates_total_g,
+    fatTotalG: row.fat_total_g,
+    fatSaturatedG: row.fat_saturated_g,
+    fiberG: row.fiber_g,
+    sugarG: row.sugar_g,
+    sodiumMg: row.sodium_mg,
+    potassiumMg: row.potassium_mg,
+    cholesterolMg: row.cholesterol_mg,
+    dataSource: row.data_source,
+    createdAt: toIso8601(row.created_at),
+    updatedAt: toIso8601(row.updated_at)
+  };
+}
+
+async function getFoodWithCache(query) {
+  const db = getDb();
+  const slug = slugify(query);
+  const startTime = Date.now();
+  const cachedFood = db.get(
+    "SELECT * FROM foods WHERE slug = ?",
+    [slug]
+  );
+  if (cachedFood) {
+    const responseTime = Date.now() - startTime;
+    logSearchMetric(query, slug, true, responseTime);
+    return transformFood(cachedFood);
+  }
+  if (!shouldAllowApiCall()) {
+    logError(new Error("API quota exceeded, cache miss not served"), {
+      operation: "getFoodWithCache",
+      query,
+      slug
+    });
+    return null;
+  }
+  try {
+    const apiResponse = await fetchFromCalorieNinjasWithRetry(query);
+    if (!apiResponse.items || apiResponse.items.length === 0) {
+      return null;
+    }
+    const item = apiResponse.items[0];
+    const foodData = insertFoodFromApi(item, slug);
+    const responseTime = Date.now() - startTime;
+    logApiCall();
+    logSearchMetric(query, slug, false, responseTime);
+    return foodData;
+  } catch (error) {
+    if (error && typeof error === "object" && "statusCode" in error) {
+      const statusCode = error.statusCode;
+      if (statusCode === 429) {
+        const responseTime = Date.now() - startTime;
+        logSearchMetric(query, slug, false, responseTime);
+        return null;
+      }
+    }
+    logError(error instanceof Error ? error : new Error(String(error)), {
+      operation: "getFoodWithCache",
+      query,
+      slug
+    });
+    throw error;
+  }
+}
+async function fetchFromCalorieNinjasWithRetry(query, maxRetries = 3) {
+  const delays = [1e3, 2e3, 4e3];
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fetchFromCalorieNinjas(query);
+    } catch (error) {
+      const statusCode = error.statusCode;
+      const isRetryable = statusCode >= 500;
+      if (isRetryable && attempt < maxRetries - 1) {
+        log("info", "RETRY_ATTEMPT", {
+          attempt: attempt + 1,
+          maxRetries,
+          query,
+          delayMs: delays[attempt]
+        });
+        await delay(delays[attempt]);
+        continue;
+      }
+      if (isRetryable) {
+        logError(new Error(`CalorieNinjas API failed after ${maxRetries} attempts`), {
+          operation: "fetchFromCalorieNinjasWithRetry",
+          query,
+          attempts: maxRetries,
+          lastStatusCode: statusCode
+        });
+        throw createApiError("External API server error", ErrorCode.EXTERNAL_API_ERROR, statusCode);
+      }
+      throw error;
+    }
+  }
+  throw createApiError("API request failed", ErrorCode.API_REQUEST_FAILED, 500);
+}
+function insertFoodFromApi(item, slug) {
+  const db = getDb();
+  db.run(
+    `INSERT OR IGNORE INTO foods (
+      name, slug, serving_size_g, calories, protein_g,
+      carbohydrates_total_g, fat_total_g, fat_saturated_g,
+      fiber_g, sugar_g, sodium_mg, potassium_mg, cholesterol_mg,
+      data_source, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'calorieninjas',
+      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+    [
+      item.name,
+      slug,
+      item.serving_size_g,
+      item.calories,
+      item.protein_g,
+      item.carbohydrates_total_g,
+      item.fat_total_g,
+      item.fat_saturated_g || 0,
+      item.fiber_g || 0,
+      item.sugar_g || 0,
+      item.sodium_mg || 0,
+      item.potassium_mg || 0,
+      item.cholesterol_mg || 0
+    ]
+  );
+  const cachedFood = db.get(
+    "SELECT * FROM foods WHERE slug = ?",
+    [slug]
+  );
+  if (!cachedFood) {
+    throw new Error("Failed to insert food into database");
+  }
+  return transformFood(cachedFood);
+}
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function successResponse(data, meta) {
@@ -4928,6 +5236,31 @@ function successResponse(data, meta) {
     response.meta = meta;
   }
   return response;
+}
+
+const MIN_QUERY_LENGTH = 2;
+const MAX_QUERY_LENGTH = 200;
+function validateSearchQuery(query) {
+  const errors = [];
+  const trimmed = (query == null ? void 0 : query.trim()) || "";
+  if (!trimmed) {
+    errors.push("Search query is required");
+    return { isValid: false, errors, normalizedQuery: "" };
+  }
+  if (trimmed.length < MIN_QUERY_LENGTH) {
+    errors.push(`Search query must be at least ${MIN_QUERY_LENGTH} characters`);
+  }
+  if (trimmed.length > MAX_QUERY_LENGTH) {
+    errors.push(`Search query must be less than ${MAX_QUERY_LENGTH} characters`);
+  }
+  if (/^\s+$/.test(trimmed)) {
+    errors.push("Search query cannot be only whitespace");
+  }
+  return {
+    isValid: errors.length === 0,
+    errors,
+    normalizedQuery: trimmed
+  };
 }
 
 const collections = {
@@ -4990,7 +5323,9 @@ const _lazy_ktuYz5 = () => import('../routes/api/index.mjs');
 const _lazy__tokov = () => import('../routes/api/categories/rules.mjs');
 const _lazy_6kw4gl = () => import('../routes/api/foods/_foodId_.mjs');
 const _lazy_DCtvrn = () => import('../routes/api/index2.mjs');
+const _lazy_v5_VYP = () => import('../routes/api/foods/search.get.mjs');
 const _lazy_vG5NgE = () => import('../routes/api/foods/search.mjs');
+const _lazy_uPyiqz = () => import('../routes/api/metrics/cache.get.mjs');
 const _lazy_QsMkud = () => import('../routes/renderer.mjs').then(function (n) { return n.r; });
 
 const handlers = [
@@ -5001,7 +5336,9 @@ const handlers = [
   { route: '/api/categories/rules', handler: _lazy__tokov, lazy: true, middleware: false, method: undefined },
   { route: '/api/foods/:foodId', handler: _lazy_6kw4gl, lazy: true, middleware: false, method: undefined },
   { route: '/api/foods', handler: _lazy_DCtvrn, lazy: true, middleware: false, method: undefined },
+  { route: '/api/foods/search', handler: _lazy_v5_VYP, lazy: true, middleware: false, method: "get" },
   { route: '/api/foods/search', handler: _lazy_vG5NgE, lazy: true, middleware: false, method: undefined },
+  { route: '/api/metrics/cache', handler: _lazy_uPyiqz, lazy: true, middleware: false, method: "get" },
   { route: '/__nuxt_error', handler: _lazy_QsMkud, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/api/_nuxt_icon/:collection', handler: _riOLKZ, lazy: false, middleware: false, method: undefined },
@@ -5162,5 +5499,5 @@ const listener = function(req, res) {
   return handler(req, res);
 };
 
-export { $fetch$1 as $, baseURL as A, createHooks as B, isEqual as C, stringifyParsedURL as D, ErrorCode as E, stringifyQuery as F, parseQuery as G, toRouteMatcher as H, createRouter$1 as I, defu as J, withTrailingSlash as K, withoutTrailingSlash as L, listener as M, getRouterParam as a, createNotFoundError as b, createApiError as c, defineEventHandler as d, createError$1 as e, buildAssetsURL as f, getDb as g, getResponseStatusText as h, getResponseStatus as i, defineRenderHandler as j, getQuery as k, logError as l, destr as m, getRouteRules as n, useNitroApp as o, publicAssetsURL as p, klona as q, defuFn as r, successResponse as s, hasProtocol as t, useRuntimeConfig as u, isScriptProtocol as v, joinURL as w, withQuery as x, sanitizeStatusCode as y, getContext as z };
+export { $fetch$1 as $, hasProtocol as A, isScriptProtocol as B, joinURL as C, withQuery as D, ErrorCode as E, sanitizeStatusCode as F, getContext as G, baseURL as H, createHooks as I, isEqual as J, stringifyParsedURL as K, stringifyQuery as L, parseQuery as M, toRouteMatcher as N, createRouter$1 as O, defu as P, withTrailingSlash as Q, withoutTrailingSlash as R, listener as S, getRouterParam as a, createNotFoundError as b, createApiError as c, defineEventHandler as d, createError$1 as e, logApiCall$1 as f, getDb as g, getQuery as h, getFoodWithCache as i, getQuotaStatus as j, getCacheMetrics as k, logError as l, buildAssetsURL as m, getResponseStatusText as n, getResponseStatus as o, defineRenderHandler as p, publicAssetsURL as q, destr as r, successResponse as s, transformFood as t, useRuntimeConfig as u, validateSearchQuery as v, getRouteRules as w, useNitroApp as x, klona as y, defuFn as z };
 //# sourceMappingURL=nitro.mjs.map

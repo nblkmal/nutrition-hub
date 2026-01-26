@@ -62,6 +62,10 @@
       "dest": "/__fallback"
     },
     {
+      "src": "/api/metrics/cache",
+      "dest": "/api/metrics/cache"
+    },
+    {
       "src": "/api/foods/search",
       "dest": "/api/foods/search"
     },
