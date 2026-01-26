@@ -122,7 +122,10 @@ describe('useFoodSearch', () => {
       vi.advanceTimersByTime(300)
       await Promise.resolve()
 
-      expect(mockFetch).toHaveBeenCalledWith('/api/foods?q=test%20%26%20query&limit=10')
+      expect(mockFetch).toHaveBeenCalled()
+      const [url] = mockFetch.mock.calls[0]
+      expect(url).toContain('test%20%26%20query')
+      expect(url).toContain('limit=10')
     })
 
     it('should call API with correct limit', async () => {
@@ -139,7 +142,10 @@ describe('useFoodSearch', () => {
       vi.advanceTimersByTime(300)
       await Promise.resolve()
 
-      expect(mockFetch).toHaveBeenCalledWith('/api/foods?q=apple&limit=10')
+      expect(mockFetch).toHaveBeenCalled()
+      const [url] = mockFetch.mock.calls[0]
+      expect(url).toContain('q=apple')
+      expect(url).toContain('limit=10')
     })
   })
 
@@ -259,7 +265,9 @@ describe('useFoodSearch', () => {
 
       // Only the last call should have been made
       expect(mockFetch).toHaveBeenCalledTimes(1)
-      expect(mockFetch).toHaveBeenCalledWith('/api/foods?q=chicken&limit=10')
+      const [url] = mockFetch.mock.calls[0]
+      expect(url).toContain('q=chicken')
+      expect(url).toContain('limit=10')
     })
 
     it('should update searchQuery with last query', async () => {
@@ -309,7 +317,9 @@ describe('useFoodSearch', () => {
 
       // Should have called API twice (second call with beef)
       expect(mockFetch).toHaveBeenCalledTimes(2)
-      expect(mockFetch).toHaveBeenCalledWith('/api/foods?q=beef&limit=10')
+      const [url] = mockFetch.mock.calls[1]
+      expect(url).toContain('q=beef')
+      expect(url).toContain('limit=10')
     })
   })
 

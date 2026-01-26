@@ -21,6 +21,7 @@ export function slugify(text: string): string {
     .toLowerCase()
     .trim()
     .replace(/'+/g, '') // Remove apostrophes (Trader Joe's → trader joes)
+    .replace(/_+/g, '-') // Replace underscores with hyphens
     .replace(/[^\w\s-]/g, '') // Remove special chars except word, space, hyphen
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Replace multiple hyphens with single
