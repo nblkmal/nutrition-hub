@@ -1,39 +1,207 @@
+<script setup lang="ts">
+useHead({
+  title: 'Nutrition Hub - Instant Food Nutrition Search',
+  meta: [
+    {
+      name: 'description',
+      content: 'Search any food and get instant nutrition facts. High protein, low carb, healthy fats - discover what foods work for your goals.'
+    },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    // Open Graph
+    { property: 'og:title', content: 'Nutrition Hub - Instant Food Nutrition Search' },
+    { property: 'og:description', content: 'Search any food and get instant nutrition facts. High protein, low carb, healthy fats - discover what foods work for your goals.' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://nutrition-hub.example.com' },
+    // Twitter Card
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'Nutrition Hub - Instant Food Nutrition Search' },
+    { name: 'twitter:description', content: 'Search any food and get instant nutrition facts. High protein, low carb, healthy fats - discover what foods work for your goals.' }
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Nutrition Hub',
+        url: 'https://nutrition-hub.example.com'
+      })
+    },
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Nutrition Hub',
+        url: 'https://nutrition-hub.example.com',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: 'https://nutrition-hub.example.com/foods/{search_term_string}'
+          },
+          'query-input': 'required name=search_term_string'
+        }
+      })
+    }
+  ]
+})
+</script>
+
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-    <div class="max-w-2xl w-full px-4 py-8">
-      <h1 class="text-4xl font-bold text-center mb-8 text-gray-900 dark:text-white">
-        Welcome to Nutrition Hub
+  <div class="homepage-container">
+    <section class="hero-section" aria-label="Hero">
+      <h1 class="hero-title">
+        Know Your Food.
+        <span class="highlight">Instantly.</span>
       </h1>
 
-      <p class="text-center text-gray-600 dark:text-gray-400 mb-8">
-        A modern nutrition tracking application built with Nuxt 4
+      <p class="hero-subtitle">
+        Search thousands of foods and get comprehensive nutrition information in milliseconds.
       </p>
 
-      <div class="flex justify-center gap-4 mb-8">
-        <UButton color="primary" size="lg">
-          Get Started
-        </UButton>
-        <UButton color="gray" size="lg" variant="outline">
-          Learn More
-        </UButton>
+      <div class="search-container">
+        <SearchBar />
       </div>
 
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <h2 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
-          Features
-        </h2>
-        <ul class="space-y-2 text-gray-700 dark:text-gray-300">
-          <li>✓ Nuxt 4 with TypeScript</li>
-          <li>✓ Nuxt UI Components</li>
-          <li>✓ SQLite Database</li>
-          <li>✓ Server-Side Rendering</li>
-        </ul>
+      <div class="example-searches">
+        <span class="try-label">Try:</span>
+        <NuxtLink to="/foods/chicken-breast" class="example-link">Chicken Breast</NuxtLink>
+        <NuxtLink to="/foods/avocado" class="example-link">Avocado</NuxtLink>
+        <NuxtLink to="/foods/salmon" class="example-link">Salmon</NuxtLink>
       </div>
-    </div>
+    </section>
+
+    <section class="features-section" aria-label="Features">
+      <div class="feature-card">
+        <UIcon name="i-heroicons-bolt" class="feature-icon" aria-hidden="true" />
+        <h3>Instant Results</h3>
+        <p>Search thousands of foods in under 200ms</p>
+      </div>
+
+      <div class="feature-card">
+        <UIcon name="i-heroicons-chart-bar" class="feature-icon" aria-hidden="true" />
+        <h3>Visual Nutrition</h3>
+        <p>See macros at a glance with progress indicators</p>
+      </div>
+
+      <div class="feature-card">
+        <UIcon name="i-heroicons-tag" class="feature-icon" aria-hidden="true" />
+        <h3>Smart Categories</h3>
+        <p>Discover foods by nutrition goals (high protein, low carb)</p>
+      </div>
+    </section>
   </div>
 </template>
 
-<script setup lang="ts">
-// Nuxt UI components are auto-imported
-// UButton is available without explicit import
-</script>
+<style scoped>
+.homepage-container {
+  min-height: 100vh;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.highlight {
+  color: #059669;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.search-container {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+.example-searches {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.try-label {
+  padding: 0.5rem;
+}
+
+.example-link {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+  min-height: 44px;
+  min-width: 44px;
+  text-decoration: none;
+  color: #059669;
+  font-weight: 500;
+}
+
+.example-link:hover {
+  background-color: #f3f4f6;
+}
+
+.example-link:focus {
+  outline: 2px solid #059669;
+  outline-offset: 2px;
+}
+
+.features-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 2rem;
+}
+
+.feature-icon {
+  font-size: 3rem;
+  color: #059669;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+p {
+  color: #6b7280;
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .features-section {
+    padding: 2rem 1rem;
+  }
+}
+</style>

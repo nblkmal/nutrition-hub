@@ -92,10 +92,14 @@ describe('Nuxt 4 Project Initialization', () => {
   })
 
   describe('Project Structure Verification', () => {
-    it('should have pages/index.vue with Nuxt UI components', () => {
+    it('should have pages/index.vue with SearchBar and SEO', () => {
       const fs = require('fs')
       const indexVue = fs.readFileSync('pages/index.vue', 'utf-8')
-      expect(indexVue).toContain('UButton')
+      // Story 2.7: Homepage with Search Interface
+      expect(indexVue).toContain('SearchBar')
+      expect(indexVue).toContain('useHead')
+      expect(indexVue).toContain('Know Your Food')
+      expect(indexVue).toContain('hero-section')
     })
 
     it('should have app/app.vue entry point', () => {

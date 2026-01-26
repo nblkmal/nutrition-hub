@@ -55,7 +55,7 @@ development_status:
   2-4-search-autocomplete-composable: done
   2-5-food-detail-page-ssr-with-seo: done
   2-6-searchbar-component-with-autocomplete: done
-  2-7-homepage-with-search-interface: backlog
+  2-7-homepage-with-search-interface: done
   2-8-nutritionlabel-component: backlog
   epic-2-retrospective: optional
 
