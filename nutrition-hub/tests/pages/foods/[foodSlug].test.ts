@@ -214,7 +214,7 @@ describe('Food Detail Page - Performance Optimization', () => {
 
 describe('Food Detail Page - Components', () => {
   it('should have NutritionLabel component', () => {
-    const componentPath = path.resolve(__dirname, '../../../components/food/NutritionLabel.vue')
+    const componentPath = path.resolve(__dirname, '../../../components/NutritionLabel.vue')
     expect(fs.existsSync(componentPath)).toBe(true)
   })
 
@@ -224,9 +224,9 @@ describe('Food Detail Page - Components', () => {
   })
 
   it('should have NutritionLabel with food prop', () => {
-    const componentPath = path.resolve(__dirname, '../../../components/food/NutritionLabel.vue')
+    const componentPath = path.resolve(__dirname, '../../../components/NutritionLabel.vue')
     const content = fs.readFileSync(componentPath, 'utf-8')
-    expect(content).toContain('NutritionLabelProps')
+    expect(content).toContain('defineProps')
     expect(content).toContain('food: Food')
   })
 
