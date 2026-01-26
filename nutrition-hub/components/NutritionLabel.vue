@@ -7,7 +7,7 @@ const props = defineProps<{
 }>()
 
 // Daily Value reference (based on FDA 2000 calorie diet)
-const DAILY_VALUES = {
+const DAILY_VALUES: Record<string, number> = {
   protein: 50,
   carbohydrates: 300,
   fat: 78,
@@ -133,7 +133,7 @@ const fiberColor = computed(() => getColor(fiberPercentage.value))
             <UCircularProgress
               :value="fiberPercentage"
               :color="fiberColor"
-              size="sm"
+              size="md"
               :aria-label="`Dietary Fiber: ${fiberPercentage}% of daily value`"
             />
           </div>

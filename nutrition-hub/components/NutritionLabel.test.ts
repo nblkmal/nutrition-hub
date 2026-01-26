@@ -314,4 +314,10 @@ describe('NutritionLabel Component - Color Application Tests', () => {
     expect(componentContent).toMatch(/fatPercentage >= 50/)
     expect(componentContent).toMatch(/fiberPercentage >= 50/)
   })
+
+  it('should use consistent UCircularProgress size for all macronutrients', () => {
+    // All UCircularProgress should use size="md" for consistency
+    const matches = componentContent.match(/<UCircularProgress[^>]*size="md"/g)
+    expect(matches).toHaveLength(4)
+  })
 })
